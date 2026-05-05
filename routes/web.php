@@ -1,22 +1,27 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-// Tambahkan baris ini di bawah:
-use App\Http\Controllers\DashboardController; 
-
+use App\Http\Controllers\UserController;
 Route::get('/', function () {
-    return view('layouts.app');
+    return view('auth.login');
 });
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::get('/dashboard', function () {
+    return view('dashboard.index');
+})->middleware(['auth'])->name('dashboard');
 
-// Sekarang baris ini tidak akan error lagi
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-// Menampilkan halaman login secara langsung dari folder resources/views/auth/login.blade.php
-Route::view('/login-page', 'auth.login')->name('login');
 
-// Jika Anda ingin ada halaman register juga
-Route::view('/register-page', 'auth.register')->name('register');
+
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
+});
+require __DIR__.'/auth.php';
