@@ -1,16 +1,17 @@
 <?php
 
 namespace App\Http\Middleware;
+
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AdminMiddleware
+class RedirectIfAuthenticated
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, ...$guards)
     {
-        if (!Auth::check() || Auth::user()->role != 'admin') {
-            abort(403);
+        if (Auth::check()) {
+            return redirect('/dashboard');
         }
 
         return $next($request);
