@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PengarangController;
+use App\Http\Controllers\RakBukuController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -20,12 +22,14 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::resource('users', UserController::class);
-});
 
-Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('users', UserController::class);
 
     Route::resource('kelas', KelasController::class);
+
+    Route::resource('pengarang', PengarangController::class);
+
+    Route::resource('rak_buku', RakBukuController::class);
 
 });
 

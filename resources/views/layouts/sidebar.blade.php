@@ -41,6 +41,26 @@
         </a>
       </li>
 
+      <li class="{{ Request::is('pengarang*') ? 'active' : '' }}">
+      <a href="{{ route('pengarang.index') }}" class="nav-link">
+        <i class="fas fa-user-edit"></i>
+        <span>Data Pengarang</span>
+      </a>
+    </li>
+
+    {{-- Data Rak Buku --}}
+<li class="{{ Request::is('rak_buku*') ? 'active' : '' }}">
+
+  <a href="{{ route('rak_buku.index') }}"
+     class="nav-link">
+
+    <i class="fas fa-archive"></i>
+
+    <span>Data Rak Buku</span>
+
+  </a>
+
+</li>
       @endif
       @endauth
 
