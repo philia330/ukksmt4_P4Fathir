@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KelasController;
 use App\Http\Controllers\UserController;
+
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -17,11 +19,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
-
-
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('users', UserController::class);
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+
+    Route::resource('kelas', KelasController::class);
+
 });
 
 require __DIR__.'/auth.php';
