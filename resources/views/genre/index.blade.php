@@ -8,14 +8,7 @@
     @if(session('success'))
       <div class="alert alert-success alert-dismissible fade show">
         {{ session('success') }}
-
-        <button type="button"
-                class="close"
-                data-dismiss="alert">
-
-          &times;
-
-        </button>
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
       </div>
     @endif
 
@@ -23,55 +16,43 @@
 
       {{-- HEADER --}}
       <div class="card-header d-flex justify-content-between align-items-center">
-
-        <h4>Data Rak Buku</h4>
+        <h4>Data Genre</h4>
 
         <div class="d-flex">
 
           {{-- SEARCH --}}
-          <form method="GET"
-                action="{{ route('rak_buku.index') }}"
-                class="mr-2">
-
+          <form method="GET" action="{{ route('genre.index') }}" class="mr-2">
             <input type="text"
                    name="search"
                    class="form-control"
-                   placeholder="Cari lokasi rak..."
+                   placeholder="Cari genre..."
                    value="{{ request('search') }}">
-
           </form>
 
           {{-- RESET --}}
-          <a href="{{ route('rak_buku.index') }}"
+          <a href="{{ route('genre.index') }}"
              class="btn btn-secondary mr-2">
-
             Reset
-
           </a>
 
           {{-- TAMBAH --}}
-          <a href="{{ route('rak_buku.create') }}"
+          <a href="{{ route('genre.create') }}"
              class="btn btn-primary">
-
-            + Tambah Rak Buku
-
+            + Tambah Genre
           </a>
 
         </div>
-
       </div>
 
       {{-- BODY --}}
       <div class="card-body p-0">
-
         <div class="table-responsive">
 
           <table class="table table-striped table-md">
-
             <thead>
               <tr>
                 <th>#</th>
-                <th>Lokasi Rak</th>
+                <th>Nama Genre</th>
                 <th>Created</th>
                 <th>Updated</th>
                 <th>Action</th>
@@ -80,41 +61,33 @@
 
             <tbody>
 
-              @forelse($rak_buku as $item)
+              @forelse($genre as $item)
               <tr>
 
                 {{-- NOMOR --}}
                 <td>
-                  {{ ($rak_buku->currentPage() - 1) * $rak_buku->perPage() + $loop->iteration }}
+                  {{ ($genre->currentPage() - 1) * $genre->perPage() + $loop->iteration }}
                 </td>
 
-                {{-- LOKASI --}}
-                <td>{{ $item->lokasi }}</td>
+                {{-- NAMA --}}
+                <td>{{ $item->nama }}</td>
 
-                {{-- CREATED --}}
-                <td>
-                  {{ optional($item->created_at)->format('d-m-Y') }}
-                </td>
+                {{-- TANGGAL --}}
+                <td>{{ optional($item->created_at)->format('d-m-Y') }}</td>
 
-                {{-- UPDATED --}}
-                <td>
-                  {{ optional($item->updated_at)->format('d-m-Y') }}
-                </td>
+                <td>{{ optional($item->updated_at)->format('d-m-Y') }}</td>
 
                 {{-- ACTION --}}
                 <td>
 
                   {{-- EDIT --}}
-                  <a href="{{ route('rak_buku.edit', $item->id) }}"
+                  <a href="{{ route('genre.edit', $item->id) }}"
                      class="btn btn-warning btn-sm">
-
                     <i class="fas fa-edit"></i>
-
-
                   </a>
 
                   {{-- DELETE --}}
-                  <form action="{{ route('rak_buku.destroy', $item->id) }}"
+                  <form action="{{ route('genre.destroy', $item->id) }}"
                         method="POST"
                         style="display:inline;">
 
@@ -124,7 +97,7 @@
                     <button class="btn btn-danger btn-sm"
                             onclick="return confirm('Yakin hapus data?')">
 
-                    <i class="fas fa-trash"></i>
+                                            <i class="fas fa-trash"></i>
 
 
                     </button>
@@ -138,14 +111,9 @@
               {{-- DATA KOSONG --}}
               @empty
               <tr>
-
-                <td colspan="5"
-                    class="text-center">
-
-                  Data rak buku tidak ditemukan
-
+                <td colspan="5" class="text-center">
+                  Data genre tidak ditemukan
                 </td>
-
               </tr>
               @endforelse
 
@@ -154,14 +122,11 @@
           </table>
 
         </div>
-
       </div>
 
-      {{-- FOOTER PAGINATION --}}
+      {{-- PAGINATION --}}
       <div class="card-footer text-right">
-
-        {{ $rak_buku->withQueryString()->onEachSide(1)->links() }}
-
+        {{ $genre->withQueryString()->onEachSide(1)->links() }}
       </div>
 
     </div>

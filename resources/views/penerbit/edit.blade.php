@@ -4,58 +4,69 @@
 <section class="section">
 
   <div class="section-header">
-    <h1>Edit Kelas</h1>
+    <h1>Edit Penerbit</h1>
   </div>
 
   <div class="section-body">
 
     <div class="card">
 
-      {{-- HEADER --}}
       <div class="card-header">
-        <h4>Form Edit Kelas</h4>
+        <h4>Form Edit Penerbit</h4>
       </div>
 
-      {{-- BODY --}}
       <div class="card-body">
 
-        {{-- ERROR VALIDATION --}}
+        {{-- ERROR --}}
         @if ($errors->any())
           <div class="alert alert-danger">
+
             <ul class="mb-0">
+
               @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
               @endforeach
+
             </ul>
+
           </div>
         @endif
 
-        {{-- FORM --}}
         <form method="POST"
-              action="{{ route('kelas.update', $kelas->id) }}">
+              action="{{ route('penerbit.update', $penerbit->id) }}">
 
           @csrf
           @method('PUT')
 
+          {{-- NAMA --}}
           <div class="form-group">
 
-            <label>Nama Kelas</label>
+            <label>Nama Penerbit</label>
 
             <input type="text"
                    name="nama"
                    class="form-control"
-                   value="{{ old('nama', $kelas->nama) }}"
-                   placeholder="Masukkan nama kelas"
+                   value="{{ old('nama', $penerbit->nama) }}"
                    required>
 
           </div>
 
-          {{-- BUTTON --}}
+          {{-- ALAMAT --}}
+          <div class="form-group">
+
+            <label>Alamat</label>
+
+            <textarea name="alamat"
+                      class="form-control"
+                      required>{{ old('alamat', $penerbit->alamat) }}</textarea>
+
+          </div>
+
           <button class="btn btn-primary">
             Update
           </button>
 
-          <a href="{{ route('kelas.index') }}"
+          <a href="{{ route('penerbit.index') }}"
              class="btn btn-secondary">
 
             Kembali
@@ -65,6 +76,7 @@
         </form>
 
       </div>
+
     </div>
 
   </div>

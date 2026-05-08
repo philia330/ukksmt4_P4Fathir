@@ -14,8 +14,8 @@ class PengarangController extends Controller
         $pengarang = Pengarang::when($search, function ($query, $search) {
                             return $query->where('nama', 'like', '%' . $search . '%');
                         })
-                        ->latest()
-                        ->paginate(10);
+                        ->oldest()
+                        ->paginate(5);
 
         return view('pengarang.index', compact('pengarang'));
     }

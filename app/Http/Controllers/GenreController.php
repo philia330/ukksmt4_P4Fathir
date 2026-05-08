@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kelas;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 
-class KelasController extends Controller
+class GenreController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,13 +14,13 @@ class KelasController extends Controller
     {
         $search = $request->search;
 
-        $kelas = Kelas::when($search, function ($query, $search) {
+        $genre = Genre::when($search, function ($query, $search) {
                         return $query->where('nama', 'like', '%' . $search . '%');
                     })
-                    ->latest()
-                    ->paginate(10);
+                    ->oldest()
+                    ->paginate(5);
 
-        return view('kelas.index', compact('kelas'));
+        return view('genre.index', compact('genre'));
     }
 
     /**
@@ -28,7 +28,7 @@ class KelasController extends Controller
      */
     public function create()
     {
-        return view('kelas.create');
+        return view('genre.create');
     }
 
     /**
@@ -37,25 +37,25 @@ class KelasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|max:255|unique:kelas,nama'
+            'nama' => 'required|max:255|unique:genre,nama'
         ], [
-            'nama.required' => 'Nama kelas wajib diisi',
-            'nama.unique' => 'Nama kelas sudah ada',
+            'nama.required' => 'Nama genre wajib diisi',
+            'nama.unique' => 'Nama genre sudah ada',
         ]);
 
-        Kelas::create([
+        Genre::create([
             'nama' => $request->nama
         ]);
 
         return redirect()
-                ->route('kelas.index')
-                ->with('success', 'Data kelas berhasil ditambahkan');
+                ->route('genre.index')
+                ->with('success', 'Data genre berhasil ditambahkan');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Kelas $kelas)
+    public function show(Genre $genre)
     {
         //
     }
@@ -65,9 +65,9 @@ class KelasController extends Controller
      */
     public function edit($id)
     {
-        $kelas = Kelas::findOrFail($id);
+        $genre = Genre::findOrFail($id);
 
-        return view('kelas.edit', compact('kelas'));
+        return view('genre.edit', compact('genre'));
     }
 
     /**
@@ -76,21 +76,21 @@ class KelasController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama' => 'required|max:255|unique:kelas,nama,' . $id
+            'nama' => 'required|max:255|unique:genre,nama,' . $id
         ], [
-            'nama.required' => 'Nama kelas wajib diisi',
-            'nama.unique' => 'Nama kelas sudah ada',
+            'nama.required' => 'Nama genre wajib diisi',
+            'nama.unique' => 'Nama genre sudah ada',
         ]);
 
-        $kelas = Kelas::findOrFail($id);
+        $genre = Genre::findOrFail($id);
 
-        $kelas->update([
+        $genre->update([
             'nama' => $request->nama
         ]);
 
         return redirect()
-                ->route('kelas.index')
-                ->with('success', 'Data kelas berhasil diupdate');
+                ->route('genre.index')
+                ->with('success', 'Data genre berhasil diupdate');
     }
 
     /**
@@ -98,12 +98,12 @@ class KelasController extends Controller
      */
     public function destroy($id)
     {
-        $kelas = Kelas::findOrFail($id);
+        $genre = Genre::findOrFail($id);
 
-        $kelas->delete();
+        $genre->delete();
 
         return redirect()
-                ->route('kelas.index')
-                ->with('success', 'Data kelas berhasil dihapus');
+                ->route('genre.index')
+                ->with('success', 'Data genre berhasil dihapus');
     }
 }

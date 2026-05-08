@@ -98,7 +98,9 @@
                 {{-- ACTION --}}
                 <td>
                   <a href="{{ route('users.edit', $user->id) }}"
-                     class="btn btn-warning btn-sm">Edit</a>
+                     class="btn btn-warning btn-sm">
+                    <i class="fas fa-edit"></i>
+                    </a>
 
                   <form action="{{ route('users.destroy', $user->id) }}"
                         method="POST" style="display:inline;">
@@ -106,7 +108,8 @@
                     @method('DELETE')
                     <button class="btn btn-danger btn-sm"
                             onclick="return confirm('Yakin hapus?')">
-                      Delete
+                     <i class="fas fa-trash"></i>
+
                     </button>
                   </form>
                 </td>
@@ -128,7 +131,7 @@
 
       {{-- FOOTER PAGINATION --}}
       <div class="card-footer text-right">
-        {{ $users->withQueryString()->links() }}
+        {{ $users->withQueryString()->onEachSide(1)->links() }}
       </div>
 
     </div>

@@ -4,7 +4,7 @@
 <section class="section">
 
   <div class="section-header">
-    <h1>Tambah Kelas</h1>
+    <h1>Edit Genre</h1>
   </div>
 
   <div class="section-body">
@@ -13,7 +13,7 @@
 
       {{-- HEADER --}}
       <div class="card-header">
-        <h4>Form Tambah Kelas</h4>
+        <h4>Form Edit Genre</h4>
       </div>
 
       {{-- BODY --}}
@@ -31,35 +31,36 @@
         @endif
 
         {{-- FORM --}}
-        <form method="POST" action="{{ route('kelas.store') }}">
+        <form method="POST"
+              action="{{ route('genre.update', $genre->id) }}">
+
           @csrf
+          @method('PUT')
 
           <div class="form-group">
-            <label>Nama Kelas</label>
+
+            <label>Nama Genre</label>
 
             <input type="text"
                    name="nama"
                    class="form-control"
-                   value="{{ old('nama') }}"
-                   placeholder="Masukkan nama kelas"
+                   value="{{ old('nama', $genre->nama) }}"
+                   placeholder="Masukkan nama genre"
                    required>
+
           </div>
 
           {{-- BUTTON --}}
-          <div class="d-flex">
+          <button class="btn btn-primary">
+            Update
+          </button>
 
-            <button type="submit" class="btn btn-primary mr-2">
-              Tambah
-            </button>
+          <a href="{{ route('genre.index') }}"
+             class="btn btn-secondary">
 
-            <a href="{{ route('kelas.index') }}"
-               class="btn btn-secondary">
+            Kembali
 
-              Kembali
-
-            </a>
-
-          </div>
+          </a>
 
         </form>
 

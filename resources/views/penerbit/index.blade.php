@@ -7,6 +7,7 @@
     {{-- ALERT --}}
     @if(session('success'))
       <div class="alert alert-success alert-dismissible fade show">
+
         {{ session('success') }}
 
         <button type="button"
@@ -16,6 +17,7 @@
           &times;
 
         </button>
+
       </div>
     @endif
 
@@ -24,25 +26,25 @@
       {{-- HEADER --}}
       <div class="card-header d-flex justify-content-between align-items-center">
 
-        <h4>Data Rak Buku</h4>
+        <h4>Data Penerbit</h4>
 
         <div class="d-flex">
 
           {{-- SEARCH --}}
           <form method="GET"
-                action="{{ route('rak_buku.index') }}"
+                action="{{ route('penerbit.index') }}"
                 class="mr-2">
 
             <input type="text"
                    name="search"
                    class="form-control"
-                   placeholder="Cari lokasi rak..."
+                   placeholder="Cari penerbit..."
                    value="{{ request('search') }}">
 
           </form>
 
           {{-- RESET --}}
-          <a href="{{ route('rak_buku.index') }}"
+          <a href="{{ route('penerbit.index') }}"
              class="btn btn-secondary mr-2">
 
             Reset
@@ -50,10 +52,10 @@
           </a>
 
           {{-- TAMBAH --}}
-          <a href="{{ route('rak_buku.create') }}"
+          <a href="{{ route('penerbit.create') }}"
              class="btn btn-primary">
 
-            + Tambah Rak Buku
+            + Tambah Penerbit
 
           </a>
 
@@ -71,7 +73,8 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>Lokasi Rak</th>
+                <th>Nama</th>
+                <th>Alamat</th>
                 <th>Created</th>
                 <th>Updated</th>
                 <th>Action</th>
@@ -80,32 +83,28 @@
 
             <tbody>
 
-              @forelse($rak_buku as $item)
+              @forelse($penerbit as $item)
               <tr>
 
-                {{-- NOMOR --}}
                 <td>
-                  {{ ($rak_buku->currentPage() - 1) * $rak_buku->perPage() + $loop->iteration }}
+                  {{ ($penerbit->currentPage() - 1) * $penerbit->perPage() + $loop->iteration }}
                 </td>
 
-                {{-- LOKASI --}}
-                <td>{{ $item->lokasi }}</td>
+                <td>{{ $item->nama }}</td>
 
-                {{-- CREATED --}}
+                <td>{{ $item->alamat }}</td>
+
                 <td>
                   {{ optional($item->created_at)->format('d-m-Y') }}
                 </td>
 
-                {{-- UPDATED --}}
                 <td>
                   {{ optional($item->updated_at)->format('d-m-Y') }}
                 </td>
 
-                {{-- ACTION --}}
                 <td>
 
-                  {{-- EDIT --}}
-                  <a href="{{ route('rak_buku.edit', $item->id) }}"
+                  <a href="{{ route('penerbit.edit', $item->id) }}"
                      class="btn btn-warning btn-sm">
 
                     <i class="fas fa-edit"></i>
@@ -113,8 +112,7 @@
 
                   </a>
 
-                  {{-- DELETE --}}
-                  <form action="{{ route('rak_buku.destroy', $item->id) }}"
+                  <form action="{{ route('penerbit.destroy', $item->id) }}"
                         method="POST"
                         style="display:inline;">
 
@@ -135,14 +133,13 @@
 
               </tr>
 
-              {{-- DATA KOSONG --}}
               @empty
               <tr>
 
-                <td colspan="5"
+                <td colspan="6"
                     class="text-center">
 
-                  Data rak buku tidak ditemukan
+                  Data penerbit tidak ditemukan
 
                 </td>
 
@@ -157,10 +154,10 @@
 
       </div>
 
-      {{-- FOOTER PAGINATION --}}
+      {{-- PAGINATION --}}
       <div class="card-footer text-right">
 
-        {{ $rak_buku->withQueryString()->onEachSide(1)->links() }}
+        {{ $penerbit->withQueryString()->onEachSide(1)->links() }}
 
       </div>
 

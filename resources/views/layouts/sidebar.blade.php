@@ -33,11 +33,11 @@
       {{-- MASTER DATA --}}
       <li class="menu-header">Master Data</li>
 
-      {{-- DATA KELAS --}}
-      <li class="{{ Request::is('kelas*') ? 'active' : '' }}">
-        <a href="{{ route('kelas.index') }}" class="nav-link">
+      {{-- DATA Genre --}}
+      <li class="{{ Request::is('genre*') ? 'active' : '' }}">
+        <a href="{{ route('genre.index') }}" class="nav-link">
           <i class="fas fa-school"></i>
-          <span>Data Kelas</span>
+          <span>Data Genre</span>
         </a>
       </li>
 
@@ -57,6 +57,34 @@
     <i class="fas fa-archive"></i>
 
     <span>Data Rak Buku</span>
+
+  </a>
+
+</li>
+
+{{-- Data Penerbit --}}
+<li class="{{ Request::is('penerbit*') ? 'active' : '' }}">
+
+  <a href="{{ route('penerbit.index') }}"
+     class="nav-link">
+
+    <i class="fas fa-building"></i>
+
+    <span>Data Penerbit</span>
+
+  </a>
+
+</li>
+
+{{-- Data Buku --}}
+<li class="{{ Request::is('buku*') ? 'active' : '' }}">
+
+  <a href="{{ route('buku.index') }}"
+     class="nav-link">
+
+    <i class="fas fa-book"></i>
+
+    <span>Data Buku</span>
 
   </a>
 

@@ -52,7 +52,7 @@ class UserController extends Controller
     }
 
     // PAGINATION
-    $users = $query->latest()->paginate(10);
+    $users = $query->oldest()->paginate(5);
 
     return view('users.index', compact('users'));
 }

@@ -4,11 +4,19 @@
 <div class="row">
   <div class="col-12">
 
-    {{-- ALERT --}}
     @if(session('success'))
       <div class="alert alert-success alert-dismissible fade show">
+
         {{ session('success') }}
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+        <button type="button"
+                class="close"
+                data-dismiss="alert">
+
+          &times;
+
+        </button>
+
       </div>
     @endif
 
@@ -16,78 +24,117 @@
 
       {{-- HEADER --}}
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h4>Data Kelas</h4>
+
+        <h4>Data Buku</h4>
 
         <div class="d-flex">
 
           {{-- SEARCH --}}
-          <form method="GET" action="{{ route('kelas.index') }}" class="mr-2">
+          <form method="GET"
+                action="{{ route('buku.index') }}"
+                class="mr-2">
+
             <input type="text"
                    name="search"
                    class="form-control"
-                   placeholder="Cari kelas..."
+                   placeholder="Cari buku..."
                    value="{{ request('search') }}">
+
           </form>
 
           {{-- RESET --}}
-          <a href="{{ route('kelas.index') }}"
+          <a href="{{ route('buku.index') }}"
              class="btn btn-secondary mr-2">
+
             Reset
+
           </a>
 
           {{-- TAMBAH --}}
-          <a href="{{ route('kelas.create') }}"
+          <a href="{{ route('buku.create') }}"
              class="btn btn-primary">
-            + Tambah Kelas
+
+            + Tambah Buku
+
           </a>
 
         </div>
+
       </div>
 
       {{-- BODY --}}
       <div class="card-body p-0">
+
         <div class="table-responsive">
 
           <table class="table table-striped table-md">
+
             <thead>
               <tr>
+
                 <th>#</th>
-                <th>Nama Kelas</th>
-                <th>Created</th>
-                <th>Updated</th>
+                <th>Foto</th>
+                <th>Judul</th>
+                <th>Genre</th>
+                <th>Pengarang</th>
+                <th>Penerbit</th>
+                <th>Rak</th>
+                <th>Tahun</th>
+                <th>Stok</th>
                 <th>Action</th>
+
               </tr>
             </thead>
 
             <tbody>
 
-              @forelse($kelas as $item)
+              @forelse($buku as $item)
               <tr>
 
-                {{-- NOMOR --}}
                 <td>
-                  {{ ($kelas->currentPage() - 1) * $kelas->perPage() + $loop->iteration }}
+                  {{ ($buku->currentPage() - 1) * $buku->perPage() + $loop->iteration }}
                 </td>
 
-                {{-- NAMA --}}
-                <td>{{ $item->nama }}</td>
-
-                {{-- TANGGAL --}}
-                <td>{{ optional($item->created_at)->format('d-m-Y') }}</td>
-
-                <td>{{ optional($item->updated_at)->format('d-m-Y') }}</td>
-
-                {{-- ACTION --}}
+                {{-- FOTO --}}
                 <td>
 
-                  {{-- EDIT --}}
-                  <a href="{{ route('kelas.edit', $item->id) }}"
+                  @if($item->foto)
+
+                    <img src="{{ asset('uploads/buku/' . $item->foto) }}"
+                         width="70">
+
+                  @else
+
+                    Tidak ada foto
+
+                  @endif
+
+                </td>
+
+                <td>{{ $item->judul }}</td>
+
+                <td>{{ $item->genre->nama }}</td>
+
+                <td>{{ $item->pengarang->nama }}</td>
+
+                <td>{{ $item->penerbit->nama }}</td>
+
+                <td>{{ $item->rak->lokasi }}</td>
+
+                <td>{{ $item->tahun }}</td>
+
+                <td>{{ $item->stok }}</td>
+
+                <td>
+
+                  <a href="{{ route('buku.edit', $item->id) }}"
                      class="btn btn-warning btn-sm">
-                    Edit
+
+                    <i class="fas fa-edit"></i>
+
                   </a>
 
-                  {{-- DELETE --}}
-                  <form action="{{ route('kelas.destroy', $item->id) }}"
+                  <form action="{{ route('buku.destroy', $item->id) }}"
                         method="POST"
                         style="display:inline;">
 
@@ -97,7 +144,7 @@
                     <button class="btn btn-danger btn-sm"
                             onclick="return confirm('Yakin hapus data?')">
 
-                      Delete
+                      <i class="fas fa-trash"></i>
 
                     </button>
 
@@ -107,12 +154,16 @@
 
               </tr>
 
-              {{-- DATA KOSONG --}}
               @empty
               <tr>
-                <td colspan="5" class="text-center">
-                  Data kelas tidak ditemukan
+
+                <td colspan="10"
+                    class="text-center">
+
+                  Data buku tidak ditemukan
+
                 </td>
+
               </tr>
               @endforelse
 
@@ -121,11 +172,14 @@
           </table>
 
         </div>
+
       </div>
 
       {{-- PAGINATION --}}
       <div class="card-footer text-right">
-        {{ $kelas->withQueryString()->links() }}
+
+        {{ $buku->withQueryString()->onEachSide(1)->links() }}
+
       </div>
 
     </div>

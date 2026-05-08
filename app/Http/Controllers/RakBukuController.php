@@ -17,8 +17,8 @@ class RakBukuController extends Controller
         $rak_buku = RakBuku::when($search, function ($query, $search) {
                             return $query->where('lokasi', 'like', '%' . $search . '%');
                         })
-                        ->latest()
-                        ->paginate(10);
+                        ->oldest()
+                        ->paginate(5);
 
         return view('rak_buku.index', compact('rak_buku'));
     }

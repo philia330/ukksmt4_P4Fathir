@@ -119,7 +119,8 @@
                   <a href="{{ route('pengarang.edit', $item->id) }}"
                      class="btn btn-warning btn-sm">
 
-                    Edit
+                    <i class="fas fa-edit"></i>
+
 
                   </a>
 
@@ -134,7 +135,7 @@
                     <button class="btn btn-danger btn-sm"
                             onclick="return confirm('Yakin hapus data?')">
 
-                      Delete
+                    <i class="fas fa-trash"></i>
 
                     </button>
 
@@ -163,7 +164,7 @@
       {{-- FOOTER PAGINATION --}}
       <div class="card-footer text-right">
 
-        {{ $pengarang->withQueryString()->links() }}
+        {{ $pengarang->withQueryString()->onEachSide(1)->links() }}
 
       </div>
 
