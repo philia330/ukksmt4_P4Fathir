@@ -51,14 +51,6 @@
           <input type="password" name="password" class="form-control" required>
         </div>
 
-        {{-- REMEMBER --}}
-        <div class="form-group">
-          <div class="custom-control custom-checkbox">
-            <input type="checkbox" name="remember" class="custom-control-input" id="remember">
-            <label class="custom-control-label" for="remember">Remember Me</label>
-          </div>
-        </div>
-
         {{-- BUTTON --}}
         <div class="form-group">
           <button type="submit" class="btn btn-primary btn-lg btn-block">

@@ -7,6 +7,11 @@
 
 <div class="row">
 
+{{-- HANYA ADMIN & PETUGAS --}}
+@if(auth()->user()->role == 'admin' || auth()->user()->role == 'petugas')
+
+<div class="row">
+
   {{-- TOTAL BUKU --}}
   <div class="col-lg-3 col-md-6 col-sm-6 col-12">
 
@@ -108,6 +113,7 @@
   </div>
 
 </div>
+
 {{-- TABLE BUKU --}}
 <div class="card">
 
@@ -214,10 +220,13 @@
 
   <div class="card-footer text-right">
 
-  {{ $bukuTerbaru->onEachSide(1)->links() }}
+    {{ $bukuTerbaru->onEachSide(1)->links() }}
+
+  </div>
 
 </div>
 
+@endif
 </div>
 
 @endsection

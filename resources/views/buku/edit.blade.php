@@ -77,15 +77,15 @@
             {{-- KELAS --}}
             <div class="form-group col-6">
 
-              <label>Kelas</label>
+              <label>Genre</label>
 
-              <select name="id_kelas"
+              <select name="id_genre"
                       class="form-control"
                       required>
 
-                @foreach($kelas as $item)
+                @foreach($genre as $item)
                   <option value="{{ $item->id }}"
-                    {{ $buku->id_kelas == $item->id ? 'selected' : '' }}>
+                    {{ $buku->id_genre == $item->id ? 'selected' : '' }}>
 
                     {{ $item->nama }}
 

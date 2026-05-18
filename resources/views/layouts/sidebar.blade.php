@@ -92,6 +92,34 @@
       @endif
       @endauth
 
+  {{-- PEMINJAMAN --}}
+  <li class="menu-header">Peminjaman</li>
+
+      @if(in_array(auth()->user()->role, ['admin', 'anggota']))
+<li class="{{ Request::is('peminjaman*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('peminjaman.index') }}">
+        <i class="fas fa-book-reader"></i>
+        <span>Peminjaman</span>
+    </a>
+</li>
+@endif
+
+@if(in_array(auth()->user()->role, ['admin', 'petuggas']))
+<li class="{{ Request::is('transaksi-peminjaman*') ? 'active' : '' }}">
+
+    <a class="nav-link"
+       href="{{ route('peminjaman.transaksi') }}">
+
+        <i class="fas fa-exchange-alt"></i>
+
+        <span>Transaksi Peminjaman</span>
+
+    </a>
+
+</li>
+@endif
+
+
       {{-- ACCOUNT --}}
       <li class="menu-header">Account</li>
 
