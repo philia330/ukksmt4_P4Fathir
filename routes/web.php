@@ -51,41 +51,72 @@ Route::middleware(['auth'])->group(function () {
 
         /*
         |--------------------------------------------------------------------------
-        | HITUNG TOTAL DATA
+        | ROLE USER
         |--------------------------------------------------------------------------
         */
 
-        $totalBuku = Buku::count();
-
-        $totalAnggota = User::where('role', 'anggota')->count();
-
-        $totalPengarang = Pengarang::count();
-
-        $totalPenerbit = Penerbit::count();
+        $role = auth()->user()->role;
 
         /*
         |--------------------------------------------------------------------------
-        | BUKU TERBARU
+        | ADMIN & PETUGAS
         |--------------------------------------------------------------------------
         */
 
-        $bukuTerbaru = Buku::latest()->paginate(5);
+        if (in_array($role, ['admin', 'petugas'])) {
+
+            $totalBuku = Buku::count();
+
+            $totalAnggota = User::where('role', 'anggota')->count();
+
+            $totalPeminjaman = \App\Models\Peminjaman::count();
+
+            $totalDenda = \App\Models\Peminjaman::sum('denda');
+
+            $menunggu = \App\Models\Peminjaman::where('status', 'menunggu')->count();
+
+            $dipinjam = \App\Models\Peminjaman::where('status', 'dipinjam')->count();
+
+            $dikembalikan = \App\Models\Peminjaman::where('status', 'dikembalikan')->count();
+
+            $ditolak = \App\Models\Peminjaman::where('status', 'ditolak')->count();
+
+            $transaksiTerbaru = \App\Models\Peminjaman::with([
+
+                'user',
+                'buku'
+
+            ])->latest()->take(5)->get();
+
+            return view('dashboard.index', compact(
+
+                'totalBuku',
+                'totalAnggota',
+                'totalPeminjaman',
+                'totalDenda',
+                'menunggu',
+                'dipinjam',
+                'dikembalikan',
+                'ditolak',
+                'transaksiTerbaru'
+
+            ));
+        }
 
         /*
         |--------------------------------------------------------------------------
-        | VIEW DASHBOARD
+        | ANGGOTA
         |--------------------------------------------------------------------------
         */
 
-        return view('dashboard.index', compact(
+        $bukus = Buku::with([
 
-            'totalBuku',
-            'totalAnggota',
-            'totalPengarang',
-            'totalPenerbit',
-            'bukuTerbaru'
+            'pengarang',
+            'penerbit'
 
-        ));
+        ])->latest()->paginate(8);
+
+        return view('dashboard.index', compact('bukus'));
 
     })->name('dashboard');
 

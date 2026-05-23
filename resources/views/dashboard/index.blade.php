@@ -1,336 +1,444 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
-@section('header', 'Dashboard')
-
 @section('content')
-
-<div class="row">
 
 {{-- ===================================================== --}}
 {{-- DASHBOARD ADMIN & PETUGAS --}}
 {{-- ===================================================== --}}
-@if(auth()->user()->role == 'admin' || auth()->user()->role == 'petugas')
+
+@if(in_array(auth()->user()->role, ['admin', 'petugas']))
 
 <div class="row">
 
-  {{-- TOTAL BUKU --}}
-  <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+    {{-- TOTAL BUKU --}}
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
 
-    <div class="card card-statistic-1">
+        <div class="card card-statistic-1">
 
-      <div class="card-icon bg-primary">
-        <i class="fas fa-book"></i>
-      </div>
+            <div class="card-icon bg-primary">
 
-      <div class="card-wrap">
+                <i class="fas fa-book"></i>
 
-        <div class="card-header">
-          <h4>Total Buku</h4>
+            </div>
+
+            <div class="card-wrap">
+
+                <div class="card-header">
+
+                    <h4>Total Buku</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    {{ $totalBuku }}
+
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="card-body">
-          {{ $totalBuku }}
-        </div>
-
-      </div>
 
     </div>
 
-  </div>
+    {{-- TOTAL ANGGOTA --}}
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
 
-  {{-- TOTAL ANGGOTA --}}
-  <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="card card-statistic-1">
 
-    <div class="card card-statistic-1">
+            <div class="card-icon bg-success">
 
-      <div class="card-icon bg-success">
-        <i class="fas fa-users"></i>
-      </div>
+                <i class="fas fa-users"></i>
 
-      <div class="card-wrap">
+            </div>
 
-        <div class="card-header">
-          <h4>Total Anggota</h4>
+            <div class="card-wrap">
+
+                <div class="card-header">
+
+                    <h4>Total Anggota</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    {{ $totalAnggota }}
+
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="card-body">
-          {{ $totalAnggota }}
-        </div>
-
-      </div>
 
     </div>
 
-  </div>
+    {{-- TOTAL PEMINJAMAN --}}
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
 
-  {{-- TOTAL PENGARANG --}}
-  <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="card card-statistic-1">
 
-    <div class="card card-statistic-1">
+            <div class="card-icon bg-warning">
 
-      <div class="card-icon bg-warning">
-        <i class="fas fa-pen-nib"></i>
-      </div>
+                <i class="fas fa-book-reader"></i>
 
-      <div class="card-wrap">
+            </div>
 
-        <div class="card-header">
-          <h4>Total Pengarang</h4>
+            <div class="card-wrap">
+
+                <div class="card-header">
+
+                    <h4>Total Peminjaman</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    {{ $totalPeminjaman }}
+
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="card-body">
-          {{ $totalPengarang }}
-        </div>
-
-      </div>
 
     </div>
 
-  </div>
+    {{-- TOTAL DENDA --}}
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
 
-  {{-- TOTAL PENERBIT --}}
-  <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="card card-statistic-1">
 
-    <div class="card card-statistic-1">
+            <div class="card-icon bg-danger">
 
-      <div class="card-icon bg-danger">
-        <i class="fas fa-building"></i>
-      </div>
+                <i class="fas fa-money-bill-wave"></i>
 
-      <div class="card-wrap">
+            </div>
 
-        <div class="card-header">
-          <h4>Total Penerbit</h4>
+            <div class="card-wrap">
+
+                <div class="card-header">
+
+                    <h4>Total Denda</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    Rp {{ number_format($totalDenda, 0, ',', '.') }}
+
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="card-body">
-          {{ $totalPenerbit }}
-        </div>
-
-      </div>
 
     </div>
-
-  </div>
 
 </div>
 
-{{-- TABLE BUKU --}}
-<div class="card">
+{{-- ===================================================== --}}
+{{-- STATUS TRANSAKSI --}}
+{{-- ===================================================== --}}
 
-  <div class="card-header">
-    <h4>Stok Buku Terbaru</h4>
-  </div>
+<div class="row">
 
-  <div class="card-body p-0">
+    {{-- MENUNGGU --}}
+    <div class="col-lg-3 col-md-6">
 
-    <div class="table-responsive">
+        <div class="card">
 
-      <table class="table table-striped table-md mb-0">
+            <div class="card-body text-center">
 
-        <thead>
-          <tr>
+                <h6>Menunggu</h6>
 
-            <th>#</th>
-            <th>Foto</th>
-            <th>Judul Buku</th>
-            <th>Stok</th>
+                <h3 class="text-warning">
 
-          </tr>
-        </thead>
+                    {{ $menunggu }}
 
-        <tbody>
+                </h3>
 
-          @forelse($bukuTerbaru as $item)
-          <tr>
+            </div>
 
-            {{-- NOMOR --}}
-            <td>
-              {{ ($bukuTerbaru->currentPage() - 1) * $bukuTerbaru->perPage() + $loop->iteration }}
-            </td>
-
-            {{-- FOTO --}}
-            <td>
-
-              @if($item->foto)
-
-                <img src="{{ asset('uploads/buku/' . $item->foto) }}"
-                     width="60"
-                     class="rounded">
-
-              @else
-
-                Tidak ada foto
-
-              @endif
-
-            </td>
-
-            {{-- JUDUL --}}
-            <td>
-              {{ $item->judul }}
-            </td>
-
-            {{-- STOK --}}
-            <td>
-
-              @if($item->stok < 5)
-
-                <span class="badge badge-danger">
-
-                  {{ $item->stok }}
-
-                </span>
-
-              @else
-
-                <span class="badge badge-primary">
-
-                  {{ $item->stok }}
-
-                </span>
-
-              @endif
-
-            </td>
-
-          </tr>
-
-          @empty
-
-          <tr>
-
-            <td colspan="4"
-                class="text-center">
-
-              Data buku belum tersedia
-
-            </td>
-
-          </tr>
-
-          @endforelse
-
-        </tbody>
-
-      </table>
+        </div>
 
     </div>
 
-  </div>
+    {{-- DIPINJAM --}}
+    <div class="col-lg-3 col-md-6">
 
-  <div class="card-footer text-right">
+        <div class="card">
 
-    {{ $bukuTerbaru->onEachSide(1)->links() }}
+            <div class="card-body text-center">
 
-  </div>
+                <h6>Dipinjam</h6>
+
+                <h3 class="text-primary">
+
+                    {{ $dipinjam }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- DIKEMBALIKAN --}}
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card">
+
+            <div class="card-body text-center">
+
+                <h6>Dikembalikan</h6>
+
+                <h3 class="text-success">
+
+                    {{ $dikembalikan }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- DITOLAK --}}
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card">
+
+            <div class="card-body text-center">
+
+                <h6>Ditolak</h6>
+
+                <h3 class="text-danger">
+
+                    {{ $ditolak }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{{-- ===================================================== --}}
+{{-- TRANSAKSI TERBARU --}}
+{{-- ===================================================== --}}
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h4>Transaksi Terbaru</h4>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-striped table-md">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Peminjam</th>
+                        <th>Buku</th>
+                        <th>Status</th>
+                        <th>Tanggal</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @forelse($transaksiTerbaru as $item)
+
+                    <tr>
+
+                        {{-- PEMINJAM --}}
+                        <td>
+
+                            {{ $item->user->name }}
+
+                        </td>
+
+                        {{-- BUKU --}}
+                        <td>
+
+                            {{ $item->buku->judul }}
+
+                        </td>
+
+                        {{-- STATUS --}}
+                        <td>
+
+                            @if($item->status == 'menunggu')
+
+                                <span class="badge badge-warning">
+
+                                    Menunggu
+
+                                </span>
+
+                            @elseif($item->status == 'dipinjam')
+
+                                <span class="badge badge-primary">
+
+                                    Dipinjam
+
+                                </span>
+
+                            @elseif($item->status == 'dikembalikan')
+
+                                <span class="badge badge-success">
+
+                                    Dikembalikan
+
+                                </span>
+
+                            @elseif($item->status == 'ditolak')
+
+                                <span class="badge badge-danger">
+
+                                    Ditolak
+
+                                </span>
+
+                            @endif
+
+                        </td>
+
+                        {{-- TANGGAL --}}
+                        <td>
+
+                            {{ \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d-m-Y') }}
+
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+
+                        <td colspan="4"
+                            class="text-center">
+
+                            Belum ada transaksi
+
+                        </td>
+
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
 {{-- ===================================================== --}}
 {{-- DASHBOARD ANGGOTA --}}
 {{-- ===================================================== --}}
+
 @elseif(auth()->user()->role == 'anggota')
 
-<div class="col-12">
+<div class="row">
 
-  <div class="card">
+    @forelse($bukus as $buku)
 
-    <div class="card-header">
-      <h4>Katalog Buku</h4>
-    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
 
-    <div class="card-body">
+        <div class="card">
 
-      <div class="row">
+            <div class="card-body text-center">
 
-        @forelse($bukuTerbaru as $item)
+                {{-- FOTO --}}
+                @if($buku->foto)
 
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <img src="{{ asset('uploads/buku/' . $buku->foto) }}"
+                         class="img-fluid rounded mb-3"
+                         style="height:250px; width:100%; object-fit:cover;">
 
-          <div class="card shadow-sm border-0 h-100">
+                @else
 
-            {{-- FOTO BUKU --}}
-            @if($item->foto)
+                    <div class="bg-light rounded p-5 mb-3">
 
-              <img src="{{ asset('uploads/buku/' . $item->foto) }}"
-                   class="card-img-top"
-                   style="height: 320px;
-                          object-fit: cover;">
+                        Tidak ada foto
 
-            @else
+                    </div>
 
-              <img src="https://via.placeholder.com/300x320"
-                   class="card-img-top">
+                @endif
 
-            @endif
+                {{-- JUDUL --}}
+                <h5>
 
-            {{-- BODY --}}
-            <div class="card-body">
+                    {{ $buku->judul }}
 
-              {{-- JUDUL --}}
-              <h6 class="font-weight-bold mb-2">
+                </h5>
 
-                {{ $item->judul }}
+                {{-- PENGARANG --}}
+                <p class="mb-1">
 
-              </h6>
+                    <strong>Pengarang:</strong>
 
-              {{-- PENGARANG --}}
-              <p class="mb-1 text-muted">
+                    {{ $buku->pengarang->nama }}
 
-                <i class="fas fa-user-edit"></i>
+                </p>
 
-                {{ $item->pengarang->nama }}
+                {{-- PENERBIT --}}
+                <p class="mb-1">
 
-              </p>
+                    <strong>Penerbit:</strong>
 
-              {{-- PENERBIT --}}
-              <p class="mb-0 text-muted">
+                    {{ $buku->penerbit->nama }}
 
-                <i class="fas fa-building"></i>
-
-                {{ $item->penerbit->nama }}
-
-              </p>
+                </p>
 
             </div>
 
-          </div>
-
         </div>
 
-        @empty
+    </div>
 
-        <div class="col-12">
+    @empty
 
-          <div class="alert alert-danger text-center">
+    <div class="col-12">
+
+        <div class="alert alert-warning text-center">
 
             Buku belum tersedia
 
-          </div>
-
         </div>
 
-        @endforelse
-
-      </div>
-
     </div>
 
-    {{-- PAGINATION --}}
-    <div class="card-footer text-right">
+    @endforelse
 
-      {{ $bukuTerbaru->onEachSide(1)->links() }}
+</div>
 
-    </div>
+{{-- PAGINATION --}}
+<div class="d-flex justify-content-end">
 
-  </div>
+    {{ $bukus->links() }}
 
 </div>
 
 @endif
-
-</div>
 
 @endsection
