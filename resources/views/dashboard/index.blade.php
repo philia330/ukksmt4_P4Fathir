@@ -7,7 +7,9 @@
 
 <div class="row">
 
-{{-- HANYA ADMIN & PETUGAS --}}
+{{-- ===================================================== --}}
+{{-- DASHBOARD ADMIN & PETUGAS --}}
+{{-- ===================================================== --}}
 @if(auth()->user()->role == 'admin' || auth()->user()->role == 'petugas')
 
 <div class="row">
@@ -226,7 +228,109 @@
 
 </div>
 
+{{-- ===================================================== --}}
+{{-- DASHBOARD ANGGOTA --}}
+{{-- ===================================================== --}}
+@elseif(auth()->user()->role == 'anggota')
+
+<div class="col-12">
+
+  <div class="card">
+
+    <div class="card-header">
+      <h4>Katalog Buku</h4>
+    </div>
+
+    <div class="card-body">
+
+      <div class="row">
+
+        @forelse($bukuTerbaru as $item)
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+
+          <div class="card shadow-sm border-0 h-100">
+
+            {{-- FOTO BUKU --}}
+            @if($item->foto)
+
+              <img src="{{ asset('uploads/buku/' . $item->foto) }}"
+                   class="card-img-top"
+                   style="height: 320px;
+                          object-fit: cover;">
+
+            @else
+
+              <img src="https://via.placeholder.com/300x320"
+                   class="card-img-top">
+
+            @endif
+
+            {{-- BODY --}}
+            <div class="card-body">
+
+              {{-- JUDUL --}}
+              <h6 class="font-weight-bold mb-2">
+
+                {{ $item->judul }}
+
+              </h6>
+
+              {{-- PENGARANG --}}
+              <p class="mb-1 text-muted">
+
+                <i class="fas fa-user-edit"></i>
+
+                {{ $item->pengarang->nama }}
+
+              </p>
+
+              {{-- PENERBIT --}}
+              <p class="mb-0 text-muted">
+
+                <i class="fas fa-building"></i>
+
+                {{ $item->penerbit->nama }}
+
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        @empty
+
+        <div class="col-12">
+
+          <div class="alert alert-danger text-center">
+
+            Buku belum tersedia
+
+          </div>
+
+        </div>
+
+        @endforelse
+
+      </div>
+
+    </div>
+
+    {{-- PAGINATION --}}
+    <div class="card-footer text-right">
+
+      {{ $bukuTerbaru->onEachSide(1)->links() }}
+
+    </div>
+
+  </div>
+
+</div>
+
 @endif
+
 </div>
 
 @endsection

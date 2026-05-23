@@ -5,6 +5,7 @@
 <div class="row">
   <div class="col-12">
 
+    {{-- ALERT SUCCESS --}}
     @if(session('success'))
 
       <div class="alert alert-success alert-dismissible fade show">
@@ -73,7 +74,8 @@
                 <th>Peminjam</th>
                 <th>Judul Buku</th>
                 <th>Tanggal Pinjam</th>
-                <th>Tanggal Kembali</th>
+                <th>Batas Kembali</th>
+                <th>Tanggal Dikembalikan</th>
                 <th>Status</th>
                 <th>Denda</th>
                 <th>Action</th>
@@ -88,6 +90,7 @@
 
               <tr>
 
+                {{-- NOMOR --}}
                 <td>
                   {{ ($peminjaman->currentPage() - 1) * $peminjaman->perPage() + $loop->iteration }}
                 </td>
@@ -98,7 +101,8 @@
                   @if($item->buku->foto)
 
                     <img src="{{ asset('uploads/buku/' . $item->buku->foto) }}"
-                         width="70">
+                         width="70"
+                         class="rounded">
 
                   @else
 
@@ -109,15 +113,43 @@
                 </td>
 
                 {{-- PEMINJAM --}}
-                <td>{{ $item->user->name }}</td>
+                <td>
+                  {{ $item->user->name }}
+                </td>
 
                 {{-- JUDUL --}}
-                <td>{{ $item->buku->judul }}</td>
+                <td>
+                  {{ $item->buku->judul }}
+                </td>
 
-                {{-- TANGGAL --}}
-                <td>{{ $item->tanggal_pinjam }}</td>
+                {{-- TANGGAL PINJAM --}}
+                <td>
+                  {{ \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d-m-Y') }}
+                </td>
 
-                <td>{{ $item->tanggal_kembali }}</td>
+                {{-- BATAS KEMBALI --}}
+                <td>
+                  {{ \Carbon\Carbon::parse($item->tanggal_kembali)->format('d-m-Y') }}
+                </td>
+
+                {{-- TANGGAL DIKEMBALIKAN --}}
+                <td>
+
+                  @if($item->tanggal_dikembalikan)
+
+                    {{ \Carbon\Carbon::parse($item->tanggal_dikembalikan)->format('d-m-Y') }}
+
+                  @else
+
+                    <span class="badge badge-secondary">
+
+                      Belum Dikembalikan
+
+                    </span>
+
+                  @endif
+
+                </td>
 
                 {{-- STATUS --}}
                 <td>
@@ -134,16 +166,22 @@
                       Dipinjam
                     </span>
 
+                    @elseif($item->status == 'pengembalian')
+
+                    <span class="badge badge-info">
+                        Pengajuan Pengembalian
+                    </span>
+
                   @elseif($item->status == 'dikembalikan')
 
                     <span class="badge badge-success">
                       Dikembalikan
                     </span>
 
-                  @else
+                  @elseif($item->status == 'ditolak')
 
                     <span class="badge badge-danger">
-                      Terlambat
+                      Ditolak
                     </span>
 
                   @endif
@@ -152,38 +190,54 @@
 
                 {{-- DENDA --}}
                 <td>
-                  Rp {{ number_format($item->denda) }}
+
+                  @if($item->denda > 0)
+
+                    <span class="badge badge-danger">
+
+                      Rp {{ number_format($item->denda, 0, ',', '.') }}
+
+                    </span>
+
+                  @else
+
+                    <span class="badge badge-success">
+
+                      Tidak Ada
+
+                    </span>
+
+                  @endif
+
                 </td>
 
                 {{-- ACTION --}}
                 <td>
 
-                
+                  {{-- EDIT --}}
+                  <a href="{{ route('peminjaman.konfirmasi', $item->id) }}"
+                     class="btn btn-primary btn-sm">
 
-                    <a href="{{ route('peminjaman.konfirmasi', $item->id) }}"
-                      class="btn btn-primary btn-sm">
+                    <i class="fas fa-edit"></i>
 
-                        <i class="fas fa-check"></i>
+                  </a>
 
-                    </a>
-
-                  
-
+                  {{-- DELETE --}}
                   <form action="{{ route('peminjaman.destroy', $item->id) }}"
-                    method="POST"
-                    style="display:inline;">
+                        method="POST"
+                        style="display:inline;">
 
-                  @csrf
-                  @method('DELETE')
+                    @csrf
+                    @method('DELETE')
 
-                  <button class="btn btn-danger btn-sm"
-                          onclick="return confirm('Yakin hapus transaksi?')">
+                    <button class="btn btn-danger btn-sm"
+                            onclick="return confirm('Yakin hapus transaksi?')">
 
                       <i class="fas fa-trash"></i>
 
-                  </button>
+                    </button>
 
-              </form>
+                  </form>
 
                 </td>
 
@@ -193,7 +247,7 @@
 
               <tr>
 
-                <td colspan="9"
+                <td colspan="10"
                     class="text-center">
 
                   Data peminjaman tidak ditemukan

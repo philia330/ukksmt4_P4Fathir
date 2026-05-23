@@ -48,6 +48,46 @@
 </div>
 
 <!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if(session('success'))
+
+<script>
+
+Swal.fire({
+
+    toast: true,
+    position: 'top-end',
+    icon: 'success',
+    title: '{{ session('success') }}',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true
+
+});
+
+</script>
+
+@if(session('error'))
+
+<script>
+
+Swal.fire({
+
+    toast: true,
+    position: 'top-end',
+    icon: 'error',
+    title: '{{ session('error') }}',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true
+
+});
+
+</script>
+
+@endif
+
+@endif
 <script src="{{ asset('assets/modules/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/modules/popper.js') }}"></script>
 <script src="{{ asset('assets/modules/bootstrap/js/bootstrap.min.js') }}"></script>

@@ -6,12 +6,54 @@
 
     <div class="col-lg-8">
 
-        <div class="card">
+        {{-- ALERT SUCCESS --}}
+        @if(session('success'))
 
-            <div class="card-header">
-                <h4>Konfirmasi Peminjaman</h4>
+            <div class="alert alert-success alert-dismissible fade show">
+
+                {{ session('success') }}
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="alert">
+
+                    &times;
+
+                </button>
+
             </div>
 
+        @endif
+
+        {{-- ALERT ERROR --}}
+        @if(session('error'))
+
+            <div class="alert alert-danger alert-dismissible fade show">
+
+                {{ session('error') }}
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="alert">
+
+                    &times;
+
+                </button>
+
+            </div>
+
+        @endif
+
+        <div class="card shadow">
+
+            {{-- HEADER --}}
+            <div class="card-header">
+
+                <h4>Konfirmasi Peminjaman</h4>
+
+            </div>
+
+            {{-- BODY --}}
             <div class="card-body">
 
                 <form action="{{ route('peminjaman.updateKonfirmasi', $peminjaman->id) }}"
@@ -20,7 +62,7 @@
                     @csrf
                     @method('PUT')
 
-                    {{-- USER --}}
+                    {{-- PEMINJAM --}}
                     <div class="form-group">
 
                         <label>Peminjam</label>
@@ -32,7 +74,7 @@
 
                     </div>
 
-                    {{-- BUKU --}}
+                    {{-- JUDUL BUKU --}}
                     <div class="form-group">
 
                         <label>Judul Buku</label>
@@ -47,19 +89,64 @@
                     {{-- FOTO --}}
                     <div class="form-group text-center">
 
-                        <img src="{{ asset('uploads/buku/' . $peminjaman->buku->foto) }}"
-                             width="200">
+                        @if($peminjaman->buku->foto)
+
+                            <img src="{{ asset('uploads/buku/' . $peminjaman->buku->foto) }}"
+                                 width="220"
+                                 class="rounded shadow">
+
+                        @else
+
+                            <p>Tidak ada foto</p>
+
+                        @endif
 
                     </div>
 
-                    {{-- TANGGAL --}}
+                    {{-- TANGGAL PINJAM --}}
                     <div class="form-group">
 
                         <label>Tanggal Pinjam</label>
 
                         <input type="text"
                                class="form-control"
-                               value="{{ $peminjaman->tanggal_pinjam }}"
+                               value="{{ \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d-m-Y') }}"
+                               readonly>
+
+                    </div>
+
+                    {{-- BATAS PENGEMBALIAN --}}
+                    <div class="form-group">
+
+                        <label>Batas Pengembalian</label>
+
+                        <input type="text"
+                               class="form-control"
+                               value="{{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d-m-Y') }}"
+                               readonly>
+
+                    </div>
+
+                    {{-- TANGGAL DIKEMBALIKAN --}}
+                    <div class="form-group">
+
+                        <label>Tanggal Dikembalikan</label>
+
+                        <input type="text"
+                               class="form-control"
+
+                               value="
+                               @if($peminjaman->tanggal_dikembalikan)
+
+                                   {{ \Carbon\Carbon::parse($peminjaman->tanggal_dikembalikan)->format('d-m-Y') }}
+
+                               @else
+
+                                   Belum Dikembalikan
+
+                               @endif
+                               "
+
                                readonly>
 
                     </div>
@@ -72,24 +159,44 @@
                         <select name="status"
                                 class="form-control">
 
+                            {{-- MENUNGGU --}}
                             <option value="menunggu"
                                 {{ $peminjaman->status == 'menunggu' ? 'selected' : '' }}>
+
                                 Menunggu
+
                             </option>
 
+                            {{-- DIPINJAM --}}
                             <option value="dipinjam"
                                 {{ $peminjaman->status == 'dipinjam' ? 'selected' : '' }}>
+
                                 Dipinjam
+
                             </option>
 
+                            {{-- PENGEMBALIAN --}}
+                            <option value="pengembalian"
+                                {{ $peminjaman->status == 'pengembalian' ? 'selected' : '' }}>
+
+                                Menunggu Pengembalian
+
+                            </option>
+
+                            {{-- DIKEMBALIKAN --}}
                             <option value="dikembalikan"
                                 {{ $peminjaman->status == 'dikembalikan' ? 'selected' : '' }}>
+
                                 Dikembalikan
+
                             </option>
 
-                            <option value="terlambat"
-                                {{ $peminjaman->status == 'terlambat' ? 'selected' : '' }}>
-                                Terlambat
+                            {{-- DITOLAK --}}
+                            <option value="ditolak"
+                                {{ $peminjaman->status == 'ditolak' ? 'selected' : '' }}>
+
+                                Ditolak
+
                             </option>
 
                         </select>
@@ -104,10 +211,12 @@
                         <input type="number"
                                name="denda"
                                class="form-control"
-                               value="{{ $peminjaman->denda }}">
+                               min="0"
+                               value="{{ $peminjaman->denda ?? 0 }}">
 
                     </div>
 
+                    {{-- BUTTON --}}
                     <div class="text-right">
 
                         <a href="{{ route('peminjaman.transaksi') }}"
@@ -117,7 +226,8 @@
 
                         </a>
 
-                        <button class="btn btn-primary">
+                        <button type="submit"
+                                class="btn btn-primary">
 
                             Simpan Konfirmasi
 

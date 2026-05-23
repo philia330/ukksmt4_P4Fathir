@@ -1,161 +1,288 @@
 <div class="main-sidebar sidebar-style-2">
-  <aside id="sidebar-wrapper">
+    <aside id="sidebar-wrapper">
 
-    <div class="sidebar-brand">
-      <a href="{{ route('dashboard') }}">Stisla</a>
-    </div>
+        {{-- BRAND --}}
+        <div class="sidebar-brand">
+            <a href="{{ route('dashboard') }}">
+                Stisla
+            </a>
+        </div>
 
-    <ul class="sidebar-menu">
+        <ul class="sidebar-menu">
 
-      {{-- DASHBOARD --}}
-      <li class="menu-header">Dashboard</li>
+            {{-- DASHBOARD --}}
+            <li class="menu-header">
+                Dashboard
+            </li>
 
-      <li class="{{ Request::is('dashboard*') ? 'active' : '' }}">
-        <a href="{{ route('dashboard') }}" class="nav-link">
-          <i class="fas fa-fire"></i>
-          <span>Dashboard</span>
-        </a>
-      </li>
+            <li class="{{ Request::is('dashboard*') ? 'active' : '' }}">
 
-      @auth
-      @if(auth()->user()->role == 'admin')
+                <a href="{{ route('dashboard') }}"
+                   class="nav-link">
 
-      {{-- MANAJEMEN USER --}}
-      <li class="menu-header">Manajemen User</li>
+                    <i class="fas fa-fire"></i>
 
-      <li class="{{ Request::is('users*') ? 'active' : '' }}">
-        <a href="{{ route('users.index') }}" class="nav-link">
-          <i class="fas fa-users"></i>
-          <span>Data User</span>
-        </a>
-      </li>
+                    <span>Dashboard</span>
 
-      {{-- MASTER DATA --}}
-      <li class="menu-header">Master Data</li>
+                </a>
 
-      {{-- DATA Genre --}}
-      <li class="{{ Request::is('genre*') ? 'active' : '' }}">
-        <a href="{{ route('genre.index') }}" class="nav-link">
-          <i class="fas fa-school"></i>
-          <span>Data Genre</span>
-        </a>
-      </li>
+            </li>
 
-      <li class="{{ Request::is('pengarang*') ? 'active' : '' }}">
-      <a href="{{ route('pengarang.index') }}" class="nav-link">
-        <i class="fas fa-user-edit"></i>
-        <span>Data Pengarang</span>
-      </a>
-    </li>
+            {{-- ====================================================== --}}
+            {{-- ADMIN --}}
+            {{-- ====================================================== --}}
 
-    {{-- Data Rak Buku --}}
-<li class="{{ Request::is('rak_buku*') ? 'active' : '' }}">
+            @auth
 
-  <a href="{{ route('rak_buku.index') }}"
-     class="nav-link">
+            @if(auth()->user()->role == 'admin')
 
-    <i class="fas fa-archive"></i>
+                {{-- MANAJEMEN USER --}}
+                <li class="menu-header">
+                    Manajemen User
+                </li>
 
-    <span>Data Rak Buku</span>
+                <li class="{{ Request::is('users*') ? 'active' : '' }}">
 
-  </a>
+                    <a href="{{ route('users.index') }}"
+                       class="nav-link">
 
-</li>
+                        <i class="fas fa-users"></i>
 
-{{-- Data Penerbit --}}
-<li class="{{ Request::is('penerbit*') ? 'active' : '' }}">
+                        <span>Data User</span>
 
-  <a href="{{ route('penerbit.index') }}"
-     class="nav-link">
+                    </a>
 
-    <i class="fas fa-building"></i>
+                </li>
 
-    <span>Data Penerbit</span>
+                {{-- MASTER DATA --}}
+                <li class="menu-header">
+                    Master Data
+                </li>
 
-  </a>
+                {{-- GENRE --}}
+                <li class="{{ Request::is('genre*') ? 'active' : '' }}">
 
-</li>
+                    <a href="{{ route('genre.index') }}"
+                       class="nav-link">
 
-{{-- Data Buku --}}
-<li class="{{ Request::is('buku*') ? 'active' : '' }}">
+                        <i class="fas fa-school"></i>
 
-  <a href="{{ route('buku.index') }}"
-     class="nav-link">
+                        <span>Data Genre</span>
 
-    <i class="fas fa-book"></i>
+                    </a>
 
-    <span>Data Buku</span>
+                </li>
 
-  </a>
+                {{-- PENGARANG --}}
+                <li class="{{ Request::is('pengarang*') ? 'active' : '' }}">
 
-</li>
-      @endif
-      @endauth
+                    <a href="{{ route('pengarang.index') }}"
+                       class="nav-link">
 
-  {{-- PEMINJAMAN --}}
-  <li class="menu-header">Peminjaman</li>
+                        <i class="fas fa-user-edit"></i>
 
-      @if(in_array(auth()->user()->role, ['admin', 'anggota']))
-<li class="{{ Request::is('peminjaman*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('peminjaman.index') }}">
-        <i class="fas fa-book-reader"></i>
-        <span>Peminjaman</span>
-    </a>
-</li>
-@endif
+                        <span>Data Pengarang</span>
 
-@if(in_array(auth()->user()->role, ['admin', 'petuggas']))
-<li class="{{ Request::is('transaksi-peminjaman*') ? 'active' : '' }}">
+                    </a>
 
-    <a class="nav-link"
-       href="{{ route('peminjaman.transaksi') }}">
+                </li>
 
-        <i class="fas fa-exchange-alt"></i>
+                {{-- RAK BUKU --}}
+                <li class="{{ Request::is('rak_buku*') ? 'active' : '' }}">
 
-        <span>Transaksi Peminjaman</span>
+                    <a href="{{ route('rak_buku.index') }}"
+                       class="nav-link">
 
-    </a>
+                        <i class="fas fa-archive"></i>
 
-</li>
-@endif
+                        <span>Data Rak Buku</span>
 
+                    </a>
 
-      {{-- ACCOUNT --}}
-      <li class="menu-header">Account</li>
+                </li>
 
-      @guest
-      <li>
-        <a href="{{ route('login') }}" class="nav-link">
-          <i class="far fa-user"></i>
-          <span>Login</span>
-        </a>
-      </li>
-      @endguest
+                {{-- PENERBIT --}}
+                <li class="{{ Request::is('penerbit*') ? 'active' : '' }}">
 
-      @auth
-      <li>
-        <a href="#"
-           class="nav-link text-danger"
-           onclick="event.preventDefault();
-           document.getElementById('logout-form').submit();">
+                    <a href="{{ route('penerbit.index') }}"
+                       class="nav-link">
 
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Logout</span>
+                        <i class="fas fa-building"></i>
 
-        </a>
+                        <span>Data Penerbit</span>
 
-        <form id="logout-form"
-              action="{{ route('logout') }}"
-              method="POST"
-              style="display: none;">
+                    </a>
 
-          @csrf
+                </li>
 
-        </form>
-      </li>
-      @endauth
+                {{-- BUKU --}}
+                <li class="{{ Request::is('buku*') ? 'active' : '' }}">
 
-    </ul>
+                    <a href="{{ route('buku.index') }}"
+                       class="nav-link">
 
-  </aside>
+                        <i class="fas fa-book"></i>
+
+                        <span>Data Buku</span>
+
+                    </a>
+
+                </li>
+
+            @endif
+
+            {{-- ====================================================== --}}
+            {{-- PEMINJAMAN --}}
+            {{-- ====================================================== --}}
+
+            <li class="menu-header">
+                Peminjaman
+            </li>
+
+            {{-- MENU PEMINJAMAN --}}
+            @if(in_array(auth()->user()->role, ['admin', 'anggota']))
+
+                <li class="{{ Request::is('peminjaman*') ? 'active' : '' }}">
+
+                    <a href="{{ route('peminjaman.index') }}"
+                       class="nav-link">
+
+                        <i class="fas fa-book-reader"></i>
+
+                        <span>Peminjaman</span>
+
+                    </a>
+
+                </li>
+
+            @endif
+
+            {{-- MENU TRANSAKSI --}}
+            @if(in_array(auth()->user()->role, ['admin', 'petugas']))
+
+                <li class="{{ Request::is('transaksi-peminjaman*') ? 'active' : '' }}">
+
+                    <a href="{{ route('peminjaman.transaksi') }}"
+                       class="nav-link">
+
+                        <i class="fas fa-exchange-alt"></i>
+
+                        <span>Transaksi</span>
+
+                    </a>
+
+                </li>
+
+            @endif
+
+            {{-- ====================================================== --}}
+            {{-- RIWAYAT --}}
+            {{-- ====================================================== --}}
+
+            @if(in_array(auth()->user()->role, ['admin', 'anggota']))
+
+                <li class="menu-header">
+                    Riwayat
+                </li>
+
+                <li class="{{ Request::is('riwayat-peminjaman*') ? 'active' : '' }}">
+
+                    <a href="{{ route('peminjaman.riwayat') }}"
+                       class="nav-link">
+
+                        <i class="fas fa-history"></i>
+
+                        <span>Riwayat</span>
+
+                    </a>
+
+                </li>
+
+            @endif
+
+            {{-- ====================================================== --}}
+            {{-- PENGEMBALIAN --}}
+            {{-- ====================================================== --}}
+
+            @if(in_array(auth()->user()->role, ['admin', 'anggota']))
+
+                <li class="menu-header">
+                    Pengembalian
+                </li>
+
+                <li class="{{ Request::is('pengembalian*') ? 'active' : '' }}">
+
+                    <a href="{{ route('peminjaman.pengembalian') }}"
+                       class="nav-link">
+
+                        <i class="fas fa-undo"></i>
+
+                        <span>Pengembalian</span>
+
+                    </a>
+
+                </li>
+
+            @endif
+
+            @endauth
+
+            {{-- ====================================================== --}}
+            {{-- ACCOUNT --}}
+            {{-- ====================================================== --}}
+
+            <li class="menu-header">
+                Account
+            </li>
+
+            {{-- LOGIN --}}
+            @guest
+
+                <li>
+
+                    <a href="{{ route('login') }}"
+                       class="nav-link">
+
+                        <i class="far fa-user"></i>
+
+                        <span>Login</span>
+
+                    </a>
+
+                </li>
+
+            @endguest
+
+            {{-- LOGOUT --}}
+            @auth
+
+                <li>
+
+                    <a href="#"
+                       class="nav-link text-danger"
+                       onclick="event.preventDefault();
+                       document.getElementById('logout-form').submit();">
+
+                        <i class="fas fa-sign-out-alt"></i>
+
+                        <span>Logout</span>
+
+                    </a>
+
+                    <form id="logout-form"
+                          action="{{ route('logout') }}"
+                          method="POST"
+                          style="display: none;">
+
+                        @csrf
+
+                    </form>
+
+                </li>
+
+            @endauth
+
+        </ul>
+
+    </aside>
 </div>

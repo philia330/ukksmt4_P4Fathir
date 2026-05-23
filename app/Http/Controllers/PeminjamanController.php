@@ -1,53 +1,10 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| NAMESPACE CONTROLLER
-|--------------------------------------------------------------------------
-|
-| Menentukan lokasi class controller ini
-|
-*/
-
 namespace App\Http\Controllers;
-
-/*
-|--------------------------------------------------------------------------
-| IMPORT MODEL
-|--------------------------------------------------------------------------
-|
-| Digunakan untuk mengambil data database
-|
-*/
 
 use App\Models\Peminjaman;
 use App\Models\Buku;
-
-/*
-|--------------------------------------------------------------------------
-| IMPORT REQUEST
-|--------------------------------------------------------------------------
-|
-| Request digunakan untuk mengambil data form
-|
-*/
-
 use Illuminate\Http\Request;
-
-/*
-|--------------------------------------------------------------------------
-| CONTROLLER PEMINJAMAN
-|--------------------------------------------------------------------------
-|
-| Controller ini digunakan untuk:
-| - halaman peminjaman
-| - simpan peminjaman
-| - transaksi peminjaman
-| - konfirmasi peminjaman
-| - pengembalian buku
-| - update status
-|
-*/
 
 class PeminjamanController extends Controller
 {
@@ -55,46 +12,19 @@ class PeminjamanController extends Controller
     |--------------------------------------------------------------------------
     | HALAMAN PEMINJAMAN
     |--------------------------------------------------------------------------
-    |
-    | Menampilkan semua buku dalam bentuk card
-    |
-    | Bisa diakses:
-    | - admin
-    | - anggota
-    |
     */
 
     public function index()
     {
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI ROLE
-        |--------------------------------------------------------------------------
-        */
-
+        // hanya admin & anggota
         if (!in_array(auth()->user()->role, ['admin', 'anggota'])) {
 
             abort(403);
 
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | AMBIL DATA BUKU
-        |--------------------------------------------------------------------------
-        |
-        | latest()   = data terbaru tampil pertama
-        | paginate() = pagination Laravel
-        |
-        */
-
+        // ambil data buku
         $bukus = Buku::latest()->paginate(8);
-
-        /*
-        |--------------------------------------------------------------------------
-        | KIRIM DATA KE VIEW
-        |--------------------------------------------------------------------------
-        */
 
         return view('peminjaman.index', compact('bukus'));
     }
@@ -103,43 +33,19 @@ class PeminjamanController extends Controller
     |--------------------------------------------------------------------------
     | DETAIL BUKU
     |--------------------------------------------------------------------------
-    |
-    | Menampilkan detail buku sebelum dipinjam
-    |
     */
 
     public function show($id)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI ROLE
-        |--------------------------------------------------------------------------
-        */
-
+        // hanya admin & anggota
         if (!in_array(auth()->user()->role, ['admin', 'anggota'])) {
 
             abort(403);
 
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | CARI BUKU BERDASARKAN ID
-        |--------------------------------------------------------------------------
-        |
-        | findOrFail():
-        | jika data tidak ditemukan
-        | otomatis menampilkan 404
-        |
-        */
-
+        // cari buku
         $buku = Buku::findOrFail($id);
-
-        /*
-        |--------------------------------------------------------------------------
-        | TAMPILKAN HALAMAN DETAIL
-        |--------------------------------------------------------------------------
-        */
 
         return view('peminjaman.show', compact('buku'));
     }
@@ -148,16 +54,13 @@ class PeminjamanController extends Controller
     |--------------------------------------------------------------------------
     | SIMPAN PEMINJAMAN
     |--------------------------------------------------------------------------
-    |
-    | Saat tombol lanjutkan ditekan
-    |
     */
 
     public function store(Request $request)
     {
         /*
         |--------------------------------------------------------------------------
-        | VALIDASI INPUT
+        | VALIDASI
         |--------------------------------------------------------------------------
         */
 
@@ -169,7 +72,7 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | CARI DATA BUKU
+        | AMBIL DATA BUKU
         |--------------------------------------------------------------------------
         */
 
@@ -177,7 +80,7 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | CEK STOK BUKU
+        | CEK STOK
         |--------------------------------------------------------------------------
         */
 
@@ -194,28 +97,18 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | SIMPAN DATA PEMINJAMAN
+        | SIMPAN PEMINJAMAN
         |--------------------------------------------------------------------------
-        |
-        | Status pertama:
-        | menunggu
-        |
-        | Menunggu konfirmasi petugas
-        |
         */
 
         Peminjaman::create([
 
-            // user yang login
             'user_id' => auth()->user()->id,
 
-            // id buku
             'id_buku' => $buku->id,
 
-            // tanggal pinjam
             'tanggal_pinjam' => now(),
 
-            // batas pengembalian 7 hari
             'tanggal_kembali' => now()->addDays(7),
 
             // status awal
@@ -247,25 +140,13 @@ class PeminjamanController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | TRANSAKSI PEMINJAMAN
+    | HALAMAN TRANSAKSI
     |--------------------------------------------------------------------------
-    |
-    | Menampilkan seluruh transaksi peminjaman
-    |
-    | Bisa diakses:
-    | - admin
-    | - petugas
-    |
     */
 
     public function transaksi(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI ROLE
-        |--------------------------------------------------------------------------
-        */
-
+        // hanya admin & petugas
         if (!in_array(auth()->user()->role, ['admin', 'petugas'])) {
 
             abort(403);
@@ -276,10 +157,6 @@ class PeminjamanController extends Controller
         |--------------------------------------------------------------------------
         | QUERY RELASI
         |--------------------------------------------------------------------------
-        |
-        | with():
-        | eager loading relasi
-        |
         */
 
         $query = Peminjaman::with([
@@ -293,11 +170,6 @@ class PeminjamanController extends Controller
         |--------------------------------------------------------------------------
         | SEARCH
         |--------------------------------------------------------------------------
-        |
-        | Cari berdasarkan:
-        | - nama user
-        | - judul buku
-        |
         */
 
         if ($request->search) {
@@ -341,7 +213,7 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | TAMPILKAN HALAMAN TRANSAKSI
+        | TAMPILKAN VIEW
         |--------------------------------------------------------------------------
         */
 
@@ -356,14 +228,11 @@ class PeminjamanController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | HALAMAN KONFIRMASI
+    | RIWAYAT PEMINJAMAN
     |--------------------------------------------------------------------------
-    |
-    | Menampilkan detail transaksi peminjaman
-    |
     */
 
-    public function konfirmasi($id)
+    public function riwayat()
     {
         /*
         |--------------------------------------------------------------------------
@@ -371,6 +240,75 @@ class PeminjamanController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        if (!in_array(auth()->user()->role, ['admin', 'anggota'])) {
+
+            abort(403);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | JIKA ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        if (auth()->user()->role == 'admin') {
+
+            $peminjaman = Peminjaman::with([
+
+                'user',
+                'buku'
+
+            ])
+
+            ->latest()
+
+            ->paginate(10);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | JIKA ANGGOTA
+        |--------------------------------------------------------------------------
+        */
+
+        else {
+
+            $peminjaman = Peminjaman::with('buku')
+
+                ->where('user_id', auth()->user()->id)
+
+                ->latest()
+
+                ->paginate(10);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | TAMPILKAN VIEW
+        |--------------------------------------------------------------------------
+        */
+
+        return view(
+
+            'peminjaman.riwayat',
+
+            compact('peminjaman')
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | HALAMAN KONFIRMASI
+    |--------------------------------------------------------------------------
+    */
+
+    public function konfirmasi($id)
+    {
+        // hanya admin & petugas
         if (!in_array(auth()->user()->role, ['admin', 'petugas'])) {
 
             abort(403);
@@ -379,7 +317,7 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | AMBIL DATA PEMINJAMAN + RELASI
+        | AMBIL DATA PEMINJAMAN
         |--------------------------------------------------------------------------
         */
 
@@ -392,7 +330,7 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | TAMPILKAN HALAMAN KONFIRMASI
+        | TAMPILKAN VIEW
         |--------------------------------------------------------------------------
         */
 
@@ -409,28 +347,21 @@ class PeminjamanController extends Controller
     |--------------------------------------------------------------------------
     | UPDATE KONFIRMASI
     |--------------------------------------------------------------------------
-    |
-    | Digunakan untuk:
-    | - konfirmasi peminjaman
-    | - pengembalian buku
-    | - update status
-    | - update denda
-    |
     */
 
     public function updateKonfirmasi(Request $request, $id)
     {
         /*
         |--------------------------------------------------------------------------
-        | VALIDASI INPUT
+        | VALIDASI
         |--------------------------------------------------------------------------
         */
 
         $request->validate([
 
-            'status' => 'required',
+            'status' => 'required|in:menunggu,dipinjam,dikembalikan,ditolak,pengembalian',
 
-            'denda' => 'nullable|numeric',
+            'denda' => 'nullable|numeric|min:0',
 
         ]);
 
@@ -452,11 +383,8 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | SAAT DISETUJUI DIPINJAM
+        | MENUNGGU -> DIPINJAM
         |--------------------------------------------------------------------------
-        |
-        | menunggu -> dipinjam
-        |
         */
 
         if (
@@ -469,12 +397,7 @@ class PeminjamanController extends Controller
 
         ) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | KURANGI STOK
-            |--------------------------------------------------------------------------
-            */
-
+            // kurangi stok
             $buku->stok -= 1;
 
             $buku->save();
@@ -482,16 +405,13 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | SAAT BUKU DIKEMBALIKAN
+        | PENGEMBALIAN -> DIKEMBALIKAN
         |--------------------------------------------------------------------------
-        |
-        | dipinjam -> dikembalikan
-        |
         */
 
         if (
 
-            $peminjaman->status == 'dipinjam'
+            $peminjaman->status == 'pengembalian'
 
             &&
 
@@ -499,22 +419,12 @@ class PeminjamanController extends Controller
 
         ) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | TAMBAH STOK
-            |--------------------------------------------------------------------------
-            */
-
+            // tambah stok
             $buku->stok += 1;
 
             $buku->save();
 
-            /*
-            |--------------------------------------------------------------------------
-            | SIMPAN TANGGAL DIKEMBALIKAN
-            |--------------------------------------------------------------------------
-            */
-
+            // simpan tanggal dikembalikan
             $peminjaman->tanggal_dikembalikan = now();
         }
 
@@ -532,11 +442,11 @@ class PeminjamanController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $peminjaman->denda = $request->denda;
+        $peminjaman->denda = $request->denda ?? 0;
 
         /*
         |--------------------------------------------------------------------------
-        | SIMPAN PERUBAHAN
+        | SIMPAN
         |--------------------------------------------------------------------------
         */
 
@@ -556,7 +466,151 @@ class PeminjamanController extends Controller
 
                 'success',
 
-                'Transaksi peminjaman berhasil diperbarui'
+                'Transaksi berhasil diperbarui'
+
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | HALAMAN PENGEMBALIAN
+    |--------------------------------------------------------------------------
+    */
+
+    public function pengembalian()
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI ROLE
+        |--------------------------------------------------------------------------
+        */
+
+        if (!in_array(auth()->user()->role, ['admin', 'anggota'])) {
+
+            abort(403);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        if (auth()->user()->role == 'admin') {
+
+            $peminjaman = Peminjaman::with([
+
+                'user',
+                'buku'
+
+            ])
+
+            ->where('status', 'dipinjam')
+
+            ->latest()
+
+            ->get();
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | ANGGOTA
+        |--------------------------------------------------------------------------
+        */
+
+        else {
+
+            $peminjaman = Peminjaman::with('buku')
+
+                ->where('user_id', auth()->user()->id)
+
+                ->where('status', 'dipinjam')
+
+                ->latest()
+
+                ->get();
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | TAMPILKAN VIEW
+        |--------------------------------------------------------------------------
+        */
+
+        return view(
+
+            'peminjaman.pengembalian',
+
+            compact('peminjaman')
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | AJUKAN PENGEMBALIAN
+    |--------------------------------------------------------------------------
+    */
+
+    public function kembalikan($id)
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL DATA PEMINJAMAN
+        |--------------------------------------------------------------------------
+        */
+
+        $peminjaman = Peminjaman::findOrFail($id);
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK STATUS
+        |--------------------------------------------------------------------------
+        */
+
+        if ($peminjaman->status != 'dipinjam') {
+
+            return back()->with(
+
+                'error',
+
+                'Buku tidak bisa dikembalikan'
+
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | UBAH STATUS
+        |--------------------------------------------------------------------------
+        |
+        | Belum langsung dikembalikan
+        | Menunggu verifikasi admin/petugas
+        |
+        */
+
+        $peminjaman->status = 'pengembalian';
+
+        $peminjaman->save();
+
+        /*
+        |--------------------------------------------------------------------------
+        | REDIRECT
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect()
+
+            ->route('peminjaman.pengembalian')
+
+            ->with(
+
+                'success',
+
+                'Pengajuan pengembalian berhasil dikirim'
 
             );
     }
@@ -565,20 +619,32 @@ class PeminjamanController extends Controller
     |--------------------------------------------------------------------------
     | HAPUS TRANSAKSI
     |--------------------------------------------------------------------------
-    |
-    | Menghapus data transaksi peminjaman
-    |
     */
 
     public function destroy($id)
     {
         /*
         |--------------------------------------------------------------------------
-        | CARI DATA PEMINJAMAN
+        | CARI DATA
         |--------------------------------------------------------------------------
         */
 
         $peminjaman = Peminjaman::findOrFail($id);
+
+        /*
+        |--------------------------------------------------------------------------
+        | JIKA STATUS MASIH DIPINJAM
+        |--------------------------------------------------------------------------
+        */
+
+        if ($peminjaman->status == 'dipinjam') {
+
+            $buku = Buku::findOrFail($peminjaman->id_buku);
+
+            $buku->stok += 1;
+
+            $buku->save();
+        }
 
         /*
         |--------------------------------------------------------------------------

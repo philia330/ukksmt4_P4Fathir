@@ -31,10 +31,6 @@ use App\Models\Penerbit;
 |--------------------------------------------------------------------------
 | HALAMAN AWAL
 |--------------------------------------------------------------------------
-|
-| Route pertama saat website dibuka
-| Akan langsung menampilkan halaman login
-|
 */
 
 Route::get('/', function () {
@@ -47,18 +43,9 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 | DASHBOARD
 |--------------------------------------------------------------------------
-|
-| Hanya user yang login yang bisa akses dashboard
-|
 */
 
 Route::middleware(['auth'])->group(function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | HALAMAN DASHBOARD
-    |--------------------------------------------------------------------------
-    */
 
     Route::get('/dashboard', function () {
 
@@ -68,32 +55,25 @@ Route::middleware(['auth'])->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        // total buku
         $totalBuku = Buku::count();
 
-        // total user role anggota
         $totalAnggota = User::where('role', 'anggota')->count();
 
-        // total pengarang
         $totalPengarang = Pengarang::count();
 
-        // total penerbit
         $totalPenerbit = Penerbit::count();
 
         /*
         |--------------------------------------------------------------------------
-        | AMBIL BUKU TERBARU
+        | BUKU TERBARU
         |--------------------------------------------------------------------------
-        |
-        | paginate(5) = tampil 5 data per halaman
-        |
         */
 
         $bukuTerbaru = Buku::latest()->paginate(5);
 
         /*
         |--------------------------------------------------------------------------
-        | KIRIM DATA KE VIEW DASHBOARD
+        | VIEW DASHBOARD
         |--------------------------------------------------------------------------
         */
 
@@ -115,9 +95,6 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 | ADMIN ONLY
 |--------------------------------------------------------------------------
-|
-| Route di bawah ini hanya bisa diakses admin
-|
 */
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -174,12 +151,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| PEMINJAMAN BUKU
+| PEMINJAMAN & TRANSAKSI
 |--------------------------------------------------------------------------
 |
 | Bisa diakses:
 | - admin
 | - anggota
+| - petugas
 |
 */
 
@@ -189,9 +167,6 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     | HALAMAN PEMINJAMAN
     |--------------------------------------------------------------------------
-    |
-    | Menampilkan card buku
-    |
     */
 
     Route::get('/peminjaman',
@@ -204,9 +179,6 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     | DETAIL BUKU
     |--------------------------------------------------------------------------
-    |
-    | Menampilkan detail buku sebelum dipinjam
-    |
     */
 
     Route::get('/peminjaman/{id}',
@@ -219,10 +191,6 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     | SIMPAN PEMINJAMAN
     |--------------------------------------------------------------------------
-    |
-    | Saat tombol lanjutkan ditekan
-    | data akan masuk ke table peminjaman
-    |
     */
 
     Route::post('/peminjaman/store',
@@ -231,34 +199,10 @@ Route::middleware(['auth'])->group(function () {
 
     )->name('peminjaman.store');
 
-});
-
-/*
-|--------------------------------------------------------------------------
-| TRANSAKSI PEMINJAMAN
-|--------------------------------------------------------------------------
-|
-| Bisa diakses:
-| - admin
-| - petugas
-|
-| Digunakan untuk:
-| - konfirmasi peminjaman
-| - pengembalian buku
-| - update status
-| - update denda
-|
-*/
-
-Route::middleware(['auth'])->group(function () {
-
     /*
     |--------------------------------------------------------------------------
-    | HALAMAN TRANSAKSI
+    | TRANSAKSI PEMINJAMAN
     |--------------------------------------------------------------------------
-    |
-    | Menampilkan semua data peminjaman
-    |
     */
 
     Route::get('/transaksi-peminjaman',
@@ -271,9 +215,6 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     | HALAMAN KONFIRMASI
     |--------------------------------------------------------------------------
-    |
-    | Menampilkan detail transaksi peminjaman
-    |
     */
 
     Route::get('/transaksi-peminjaman/{id}/konfirmasi',
@@ -286,13 +227,6 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     | UPDATE KONFIRMASI
     |--------------------------------------------------------------------------
-    |
-    | Digunakan untuk:
-    | - update status
-    | - update denda
-    | - stok berkurang
-    | - stok bertambah
-    |
     */
 
     Route::put('/transaksi-peminjaman/{id}/update',
@@ -303,11 +237,8 @@ Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | DELETE TRANSAKSI
+    | HAPUS TRANSAKSI
     |--------------------------------------------------------------------------
-    |
-    | Menghapus transaksi peminjaman
-    |
     */
 
     Route::delete('/transaksi-peminjaman/{id}',
@@ -316,6 +247,42 @@ Route::middleware(['auth'])->group(function () {
 
     )->name('peminjaman.destroy');
 
+    /*
+    |--------------------------------------------------------------------------
+    | RIWAYAT PEMINJAMAN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/riwayat-peminjaman',
+
+        [PeminjamanController::class, 'riwayat']
+
+    )->name('peminjaman.riwayat');
+
+    /*
+    |--------------------------------------------------------------------------
+    | HALAMAN PENGEMBALIAN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/pengembalian',
+
+        [PeminjamanController::class, 'pengembalian']
+
+    )->name('peminjaman.pengembalian');
+
+    /*
+    |--------------------------------------------------------------------------
+    | AJUKAN PENGEMBALIAN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::put('/pengembalian/{id}',
+
+        [PeminjamanController::class, 'kembalikan']
+
+    )->name('peminjaman.kembalikan');
+
 });
 
 /*
@@ -323,7 +290,7 @@ Route::middleware(['auth'])->group(function () {
 | AUTH LARAVEL
 |--------------------------------------------------------------------------
 |
-| Route bawaan login/register/logout Laravel
+| Route bawaan login/register/logout
 |
 */
 
