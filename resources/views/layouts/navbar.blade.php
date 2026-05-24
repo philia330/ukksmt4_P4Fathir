@@ -25,55 +25,6 @@
 
   <ul class="navbar-nav navbar-right">
 
-    {{-- Messages --}}
-    <li class="dropdown dropdown-list-toggle">
-      <a href="#" data-toggle="dropdown" class="nav-link nav-link-lg message-toggle beep">
-        <i class="far fa-envelope"></i>
-      </a>
-
-      <div class="dropdown-menu dropdown-list dropdown-menu-right">
-        <div class="dropdown-header">
-          Messages
-        </div>
-
-        <div class="dropdown-list-content dropdown-list-message">
-          <a href="#" class="dropdown-item">
-            <div class="dropdown-item-avatar">
-              <img src="{{ asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle">
-            </div>
-            <div class="dropdown-item-desc">
-              <b>User</b>
-              <p>Hello!</p>
-            </div>
-          </a>
-        </div>
-      </div>
-    </li>
-
-    {{-- Notifications --}}
-    <li class="dropdown dropdown-list-toggle">
-      <a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep">
-        <i class="far fa-bell"></i>
-      </a>
-
-      <div class="dropdown-menu dropdown-list dropdown-menu-right">
-        <div class="dropdown-header">
-          Notifications
-        </div>
-
-        <div class="dropdown-list-content dropdown-list-icons">
-          <a href="#" class="dropdown-item">
-            <div class="dropdown-item-icon bg-primary text-white">
-              <i class="fas fa-code"></i>
-            </div>
-            <div class="dropdown-item-desc">
-              Notifikasi contoh
-            </div>
-          </a>
-        </div>
-      </div>
-    </li>
-
     {{-- User --}}
     <li class="dropdown">
       <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">

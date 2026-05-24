@@ -1,10 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="row">
   <div class="col-12">
 
     @if(session('success'))
+
       <div class="alert alert-success alert-dismissible fade show">
 
         {{ session('success') }}
@@ -18,6 +20,7 @@
         </button>
 
       </div>
+
     @endif
 
     <div class="card">
@@ -51,12 +54,16 @@
           </a>
 
           {{-- TAMBAH --}}
+          @if(auth()->user()->role == 'admin')
+
           <a href="{{ route('buku.create') }}"
              class="btn btn-primary">
 
             + Tambah Buku
 
           </a>
+
+          @endif
 
         </div>
 
@@ -70,6 +77,7 @@
           <table class="table table-striped table-md">
 
             <thead>
+
               <tr>
 
                 <th>#</th>
@@ -81,18 +89,29 @@
                 <th>Rak</th>
                 <th>Tahun</th>
                 <th>Stok</th>
-                <th>Action</th>
+
+                {{-- ACTION HANYA ADMIN --}}
+                @if(auth()->user()->role == 'admin')
+
+                  <th>Action</th>
+
+                @endif
 
               </tr>
+
             </thead>
 
             <tbody>
 
               @forelse($buku as $item)
+
               <tr>
 
+                {{-- NOMOR --}}
                 <td>
+
                   {{ ($buku->currentPage() - 1) * $buku->perPage() + $loop->iteration }}
+
                 </td>
 
                 {{-- FOTO --}}
@@ -101,7 +120,8 @@
                   @if($item->foto)
 
                     <img src="{{ asset('uploads/buku/' . $item->foto) }}"
-                         width="70">
+                         width="70"
+                         class="rounded">
 
                   @else
 
@@ -111,22 +131,77 @@
 
                 </td>
 
-                <td>{{ $item->judul }}</td>
+                {{-- JUDUL --}}
+                <td>
 
-                <td>{{ $item->genre->nama }}</td>
+                  {{ $item->judul }}
 
-                <td>{{ $item->pengarang->nama }}</td>
+                </td>
 
-                <td>{{ $item->penerbit->nama }}</td>
+                {{-- GENRE --}}
+                <td>
 
-                <td>{{ $item->rak->lokasi }}</td>
+                  {{ $item->genre->nama }}
 
-                <td>{{ $item->tahun }}</td>
+                </td>
 
-                <td>{{ $item->stok }}</td>
+                {{-- PENGARANG --}}
+                <td>
+
+                  {{ $item->pengarang->nama }}
+
+                </td>
+
+                {{-- PENERBIT --}}
+                <td>
+
+                  {{ $item->penerbit->nama }}
+
+                </td>
+
+                {{-- RAK --}}
+                <td>
+
+                  {{ $item->rak->lokasi }}
+
+                </td>
+
+                {{-- TAHUN --}}
+                <td>
+
+                  {{ $item->tahun }}
+
+                </td>
+
+                {{-- STOK --}}
+                <td>
+
+                  @if($item->stok > 0)
+
+                    <span class="badge badge-success">
+
+                      {{ $item->stok }}
+
+                    </span>
+
+                  @else
+
+                    <span class="badge badge-danger">
+
+                      Habis
+
+                    </span>
+
+                  @endif
+
+                </td>
+
+                {{-- ACTION HANYA ADMIN --}}
+                @if(auth()->user()->role == 'admin')
 
                 <td>
 
+                  {{-- EDIT --}}
                   <a href="{{ route('buku.edit', $item->id) }}"
                      class="btn btn-warning btn-sm">
 
@@ -134,6 +209,7 @@
 
                   </a>
 
+                  {{-- DELETE --}}
                   <form action="{{ route('buku.destroy', $item->id) }}"
                         method="POST"
                         style="display:inline;">
@@ -152,12 +228,15 @@
 
                 </td>
 
+                @endif
+
               </tr>
 
               @empty
+
               <tr>
 
-                <td colspan="10"
+                <td colspan="{{ auth()->user()->role == 'admin' ? '10' : '9' }}"
                     class="text-center">
 
                   Data buku tidak ditemukan
@@ -165,6 +244,7 @@
                 </td>
 
               </tr>
+
               @endforelse
 
             </tbody>
@@ -186,4 +266,5 @@
 
   </div>
 </div>
+
 @endsection
